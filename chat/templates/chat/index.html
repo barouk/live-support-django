@@ -50,8 +50,21 @@
             border: none;
             background: #f1f1f1;
             resize: none;
-            min-height: 200px;
+            min-height: 30px;
         }
+
+
+        .messages_div {
+            width: 95%;
+            padding: 10px 5px;
+            margin: 5px auto;
+            border: none;
+            background: #f1f1f1;
+            resize: none;
+            min-height: 200px !important;
+
+        }
+
 
         /* When the textarea gets focus, do something */
         .form-container textarea:focus {
@@ -80,24 +93,31 @@
         .form-container .btn:hover, .open-button:hover {
             opacity: 1;
         }
+
+        .admin{
+            text-align: right;
+
+        }
     </style>
 </head>
 <body>
 
 <h2>تست پشتیبانی آنلاین</h2>
 <p>روی دکمه پایین این صفحه کلیک کنید تا فرم چت باز شود.</p>
-
-
 <button class="open-button" onclick="openForm()">پشتیبانی</button>
 
 <div class="chat-popup" id="myForm">
-    <h1>پشتیبانی</h1>
-    <div>
-        <p>sdfsdf</p>
+    <h1 style="text-align: center">پشتیبانی</h1>
+    <div class="messages_div" id="messages_div">
+        <p class="admin">
+            :ادمین
+            <br>
+            سلام چطور میتوانم شما رو  راهنمایی کنم؟</p>
+
+
     </div>
     <div class="form-container">
-         <textarea id="chat-log"></textarea><br>
-        <label for="msg"><b>Message</b></label>
+        <label for="msg"><b>پیام خود را وارد کنید</b></label>
         <textarea id="chat-message-input" placeholder="Type message.." name="msg" required></textarea>
         <button value="Send" id="chat-message-submit" type="submit" class="btn">ارسال</button>
         <button type="button" class="btn cancel" onclick="closeForm()">بستن</button>
@@ -122,7 +142,9 @@
     function closeForm() {
         document.getElementById("myForm").style.display = "none";
     }
-    const roomName = Math.floor(Math.random() * 11);;
+
+    const roomName = Math.floor(Math.random() * 11);
+    ;
     const chatSocket = new WebSocket(
         'ws://'
         + window.location.host
@@ -132,7 +154,8 @@
     );
     chatSocket.onmessage = function (e) {
         const data = JSON.parse(e.data);
-        document.querySelector('#chat-log').value += (data.message + '\n');
+
+        document.querySelector('#messages_div').innerHTML  +=  "<p>" +(data.message + '\n') +"</p>";
     };
     chatSocket.onclose = function (e) {
         console.error('Chat socket closed unexpectedly');
@@ -161,22 +184,3 @@
 </body>
 </html>
 
-
-<!--
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8"/>
-    <title>Chat Rooms</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-</head>
-<body>
-لطفا ایمیل خود را وارد کنید<br>
-<input " size="100"><br>
-<input id="room-name-submit" type="button" value="Enter">
-
-</body>
-</html>-->
