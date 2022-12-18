@@ -26,6 +26,6 @@ class Room(models.Model):
 
 
 class Message(models.Model):
-    room = models.ForeignKey(Room , null=False , blank=False ,on_delete = models.CASCADE)
+    room = models.ForeignKey(Room , null=False , blank=False ,on_delete = models.CASCADE,related_name="Room_Message")
     user = models.CharField(max_length=12 , null=False , blank=False , choices=USER_CHOIEES,default='user')
     message = models.TextField (null=False , blank=False )

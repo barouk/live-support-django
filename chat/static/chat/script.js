@@ -1,3 +1,5 @@
+//----------user send message ----------------------
+
 function openForm() {
     document.getElementById("myForm").style.display = "block";
 }
@@ -6,7 +8,8 @@ function closeForm() {
     document.getElementById("myForm").style.display = "none";
 }
 
-const roomName = Math.floor(Math.random() * 11);
+let r = (Math.random() + 1).toString(36).substring(7);
+const roomName =  r;
 const chatSocket = new WebSocket(
     'ws://'
     + window.location.host
@@ -14,6 +17,8 @@ const chatSocket = new WebSocket(
     + roomName
     + '/'
 );
+
+
 chatSocket.onmessage = function (e) {
     const data = JSON.parse(e.data);
 
@@ -35,7 +40,10 @@ document.querySelector('#chat-message-submit').onclick = function (e) {
     const messageInputDom = document.querySelector('#chat-message-input');
     const message = messageInputDom.value;
     chatSocket.send(JSON.stringify({
-        'message': message
+        'message': message,
+        'username':"user"
     }));
     messageInputDom.value = '';
 };
+
+

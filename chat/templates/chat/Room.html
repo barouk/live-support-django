@@ -12,102 +12,42 @@
             <div class="col-md-6">
                 <div class="card card-bordered">
                     <div class="card-header">
-                        <h4 class="card-title"><strong> {{ room_name }} چت با کلاینت</strong></h4>
-                        <h4> <a href="#" data-abc="true">پایان پشتیبانی</a></h4>
-
+                        <h4 class="card-title"><strong> {{ room_name }} : چت با کلاینت</strong></h4>
+                        <h4><a href="#" data-abc="true">پایان پشتیبانی</a></h4>
                     </div>
 
-
-                    <div class="ps-container ps-theme-default ps-active-y" id="chat-content"
+                    <div class="ps-container ps-theme-default ps-active-y messages_div" id="chat-content"
                          style="overflow-y: scroll !important; height:600px !important;">
+
+                        {% for message in messages_obj %}
+
+                        {% if message.user == 'user' %}
                         <div class="media media-chat">
                             <img class="avatar" src="https://img.icons8.com/color/36/000000/administrator-male.png"
                                  alt="...">
                             <div class="media-body">
-                                <p>Hi</p>
-                                <p>How are you ...???</p>
-                                <p>What are you doing tomorrow?<br> Can we come up a bar?</p>
+
+                                {{message.message}}
                                 <p class="meta">
                                     <time datetime="2018">23:58</time>
                                 </p>
                             </div>
                         </div>
 
-                        <div class="media media-meta-day">Today</div>
-
-                        <div class="media media-chat media-chat-reverse">
+                        {% else %}
+                        <div class="media media-chat media-chat-reverse" style="direction: rtl;margin-right: 50px">
                             <div class="media-body">
-                                <p>Hiii, I'm good.</p>
-                                <p>How are you doing?</p>
-                                <p>Long time no see! Tomorrow office. will be free on sunday.</p>
+                                <p>{{message.message}}</p>
                                 <p class="meta">
                                     <time datetime="2018">00:06</time>
                                 </p>
                             </div>
                         </div>
 
-                        <div class="media media-chat">
-                            <img class="avatar" src="https://img.icons8.com/color/36/000000/administrator-male.png"
-                                 alt="...">
-                            <div class="media-body">
-                                <p>Okay</p>
-                                <p>We will go on sunday? </p>
-                                <p class="meta">
-                                    <time datetime="2018">00:07</time>
-                                </p>
-                            </div>
-                        </div>
 
-                        <div class="media media-chat media-chat-reverse">
-                            <div class="media-body">
-                                <p>That's awesome!</p>
-                                <p>I will meet you Sandon Square sharp at 10 AM</p>
-                                <p>Is that okay?</p>
-                                <p class="meta">
-                                    <time datetime="2018">00:09</time>
-                                </p>
-                            </div>
-                        </div>
+                        {% endif %}
+                        {% endfor %}
 
-                        <div class="media media-chat">
-                            <img class="avatar" src="https://img.icons8.com/color/36/000000/administrator-male.png"
-                                 alt="...">
-                            <div class="media-body">
-                                <p>Okay i will meet you on Sandon Square </p>
-                                <p class="meta">
-                                    <time datetime="2018">00:10</time>
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="media media-chat media-chat-reverse">
-                            <div class="media-body">
-                                <p>Do you have pictures of Matley Marriage?</p>
-                                <p class="meta">
-                                    <time datetime="2018">00:10</time>
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="media media-chat">
-                            <img class="avatar" src="https://img.icons8.com/color/36/000000/administrator-male.png"
-                                 alt="...">
-                            <div class="media-body">
-                                <p>Sorry I don't have. i changed my phone.</p>
-                                <p class="meta">
-                                    <time datetime="2018">00:12</time>
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="media media-chat media-chat-reverse">
-                            <div class="media-body">
-                                <p>Okay then see you on sunday!!</p>
-                                <p class="meta">
-                                    <time datetime="2018">00:12</time>
-                                </p>
-                            </div>
-                        </div>
 
                         <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 0px;">
                             <div class="ps-scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div>
@@ -120,8 +60,15 @@
                     <div class="publisher bt-1 border-light">
                         <img class="avatar avatar-xs"
                              src="https://img.icons8.com/color/36/000000/administrator-male.png" alt="...">
-                        <input class="publisher-input" type="text" placeholder="Write something">
+
+
+                        <input class="publisher-input" id="chat-message-input-admin" type="text" placeholder="Write something">
+                        <button value="Send" id="chat-message-submit-admin" type="submit" class="btn">ارسال</button>
+
+
                         <span class="publisher-btn file-group">
+
+
                   <i class="fa fa-paperclip file-browser"></i>
                   <input type="file">
                 </span>
@@ -146,6 +93,53 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+
+
+<script>
+
+
+    const roomName1 ="{{ room_name}}";
+    console.log(roomName1)
+
+
+    const chatSocketAdmin = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/chat/admin/'
+        + roomName1
+        + '/'
+    );
+    chatSocketAdmin.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        console.log(data)
+        document.querySelector('#chat-content').innerHTML += "<div>" + (data.message + '\n') + "</div>";
+    };
+    chatSocketAdmin.onclose = function (e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    document.querySelector('#chat-message-input-admin').focus();
+    document.querySelector('#chat-message-input-admin').onkeyup = function (e) {
+        if (e.keyCode === 13) {  // enter, return
+            document.querySelector('#chat-message-submit').click();
+        }
+    };
+
+    document.querySelector('#chat-message-submit-admin').onclick = function (e) {
+
+        const messageInputDom = document.querySelector('#chat-message-input-admin');
+        const message = messageInputDom.value;
+        chatSocketAdmin.send(JSON.stringify({
+            'message': message,
+             'username':'admin'
+        }));
+        messageInputDom.value = '';
+    };
+
+
+</script>
+
+
 </body>
 </html>
 
