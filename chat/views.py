@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from . import models
 
+
+
 def Index(request):
     return render(request, "chat/index.html")
 
